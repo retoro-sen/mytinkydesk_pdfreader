@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="myTinyDesk - Der leichtgewichtige, ressourcenschonende PDF-Viewer für Linux und Terminalserver">
+    <meta name="keywords" content="PDF Viewer, Python, Tkinter, Terminalserver, Linux, Open Source">
+    <title>myTinyDesk - Leichtgewichtiger PDF-Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f4f4;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .hero .cta-buttons {
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            margin: 10px;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .features {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: #2c3e50;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .use-cases {
+            padding: 80px 20px;
+            background: #ecf0f1;
+        }
+
+        .use-cases h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: #2c3e50;
+        }
+
+        .use-case-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .use-case-item {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .use-case-item h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .stats h2 {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .tech-stack {
+            padding: 80px 20px;
+            background: white;
+            text-align: center;
+        }
+
+        .tech-stack h2 {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #2c3e50;
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .tech-badge {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: #2c3e50;
+            border: 2px solid #e1e8ed;
+        }
+
+        .cta-section {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        footer {
+            padding: 40px 20px;
+            background: #1a252f;
+            color: white;
+            text-align: center;
+        }
+
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .screenshot {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .screenshot-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .tagline {
+                font-size: 1.2rem;
+            }
+
+            .feature-grid, .use-case-list {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>myTinyDesk</h1>
+            <p class="tagline">Der leichtgewichtige PDF-Viewer für moderne Linux-Umgebungen</p>
+            <p>Schnell. Schlank. Ressourcenschonend. Open Source.</p>
+            
+            <div class="cta-buttons">
+                <a href="https://github.com/retoro-sen/mytinydesk_pdfreader" class="btn btn-primary">🚀 Jetzt herunterladen</a>
+                <a href="https://github.com/retoro-sen/mytinydesk_pdfreader#-verwendung" class="btn btn-secondary">📖 Dokumentation</a>
+            </div>
+            
+            <!-- Installation Hint -->
+            <div style="margin-top: 50px; padding: 30px; background: rgba(255,255,255,0.1); border-radius: 10px; max-width: 700px; margin-left: auto; margin-right: auto;">
+                <h3 style="margin-bottom: 20px; font-size: 1.8rem;">⚡ Superschnelle Installation</h3>
+                <p style="margin-bottom: 15px; font-size: 1.1rem; opacity: 0.95;">Nur 3 Befehle und du bist startklar:</p>
+                <pre style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; text-align: left; overflow-x: auto; font-size: 0.95rem; line-height: 1.8;">git clone https://github.com/retoro-sen/mytinydesk_pdfreader.git
+cd mytinydesk_pdfreader
+python3 setup.py</pre>
+                <p style="margin-top: 15px; font-size: 1rem; opacity: 0.9;">
+                    Das wars! 🎉 Das <strong>setup.py</strong> Script macht den Rest automatisch.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshot Section -->
+    <section class="screenshot">
+        <img src="screenshot_mytinydesk_pdfreader.png" alt="myTinyDesk PDF-Reader Screenshot" style="width: 100%; border-radius: 5px;">
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>Warum myTinyDesk?</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Ein-Klick Setup</h3>
+                    <p>Automatisches Setup-Script erledigt alles: OS-Erkennung, Dependencies, venv-Erstellung. Einfacher geht's nicht!</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Blitzschnell</h3>
+                    <p>Startet in Millisekunden und rendert PDFs in Echtzeit. Keine langen Wartezeiten mehr.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Minimaler Footprint</h3>
+                    <p>Nur 20-50 MB RAM-Verbrauch. Perfekt für Terminalserver mit vielen gleichzeitigen Nutzern.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Moderne UI</h3>
+                    <p>Klare, intuitive Benutzeroberfläche mit dunkler Toolbar und optimierter Bedienung.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⌨️</div>
+                    <h3>Keyboard-First</h3>
+                    <p>Volle Tastatursteuerung: Pfeiltasten für Navigation, +/- für Zoom. Produktiv ohne Maus.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Flexibles Zooming</h3>
+                    <p>Stufenlos zoomen von 40% bis 300%. Perfekte Ansicht für jeden Bildschirm.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="use-cases">
+        <div class="container">
+            <h2>Perfekt für</h2>
+            <div class="use-case-list">
+                <div class="use-case-item">
+                    <h3>🏢 Unternehmen</h3>
+                    <p>Deployment auf Terminalservern mit hunderten Nutzern</p>
+                </div>
+
+                <div class="use-case-item">
+                    <h3>🎓 Bildungseinrichtungen</h3>
+                    <p>Ressourcenschonende Lösung für Computerräume</p>
+                </div>
+
+                <div class="use-case-item">
+                    <h3>🏠 Home Office</h3>
+                    <p>Schnelle Alternative zu schweren PDF-Readern</p>
+                </div>
+
+                <div class="use-case-item">
+                    <h3>💻 Entwickler</h3>
+                    <p>Eingebetteter Viewer für Python-Anwendungen</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <h2>Zahlen & Fakten</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">~20 MB</div>
+                    <div class="stat-label">RAM-Verbrauch</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-number">&lt;1s</div>
+                    <div class="stat-label">Startzeit</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Open Source</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-number">0€</div>
+                    <div class="stat-label">Kosten</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="tech-stack">
+        <div class="container">
+            <h2>Technologie</h2>
+            <div class="tech-badges">
+                <span class="tech-badge">🐍 Python 3.12+</span>
+                <span class="tech-badge">🖼️ Tkinter</span>
+                <span class="tech-badge">📄 PyMuPDF</span>
+                <span class="tech-badge">🎨 Pillow</span>
+                <span class="tech-badge">🐧 Linux</span>
+                <span class="tech-badge">⚡ MIT License</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Bereit, myTinyDesk auszuprobieren?</h2>
+            <p>Kostenlos. Open Source. In wenigen Minuten einsatzbereit.</p>
+            <a href="https://github.com/retoro-sen/mytinydesk_pdfreader" class="btn btn-primary">Jetzt auf GitHub ansehen</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 myTinyDesk by <a href="https://github.com/retoro-sen">retoro-sen</a></p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/retoro-sen/mytinydesk_pdfreader">GitHub</a> | 
+                <a href="https://github.com/retoro-sen/mytinydesk_pdfreader#-installation">Installation</a> | 
+                <a href="https://github.com/retoro-sen/mytinydesk_pdfreader#-mitwirken">Mitwirken</a>
+            </p>
+            <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #34495e;">
+                <h3 style="margin-bottom: 15px;">☕ Unterstütze das Projekt</h3>
+                <p style="margin-bottom: 10px;">Wenn dir myTinyDesk gefällt, kannst du das Projekt gerne unterstützen:</p>
+                <p style="margin: 10px 0; font-family: monospace; font-size: 0.9rem;">
+                    <strong>Bitcoin:</strong> bc1q40tcmyk8rtp5vyg4ykgexa0upcvd08l99dq4z0
+                </p>
+                <p style="margin-top: 15px;">
+                    <strong>Kontakt:</strong> <a href="mailto:retoro-sen@protonmail.ch">retoro-sen@protonmail.ch</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
