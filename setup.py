@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """
-myTinyDesk PDF Reader - Automatisches Setup Script
+Universal Python Project Setup Script
 Installiert automatisch alle Dependencies und bereitet die Anwendung vor.
 OS-übergreifend: Linux, Windows, macOS
+
+Version: 1.0.0
+Author: retoro-sen
+License: MIT
 """
+
+__version__ = "1.0.0"
 
 import os
 import sys
@@ -38,6 +44,17 @@ def print_header(text):
     print(f"\n{Colors.HEADER}{Colors.BOLD}{'='*60}{Colors.ENDC}")
     print(f"{Colors.HEADER}{Colors.BOLD}{text:^60}{Colors.ENDC}")
     print(f"{Colors.HEADER}{Colors.BOLD}{'='*60}{Colors.ENDC}\n")
+
+
+def main():
+    """Hauptfunktion"""
+    # Deaktiviere Farben auf Windows falls nötig
+    if platform.system() == "Windows":
+        Colors.disable_on_windows()
+    
+    print_header(f"Universal Python Setup Script v{__version__}")
+    
+    # 1. OS erkennen
 
 
 def print_success(text):
@@ -221,6 +238,91 @@ pause
         return False
 
 
+def create_desktop_entry(os_type):
+    """Erstelle Desktop-Launcher"""
+    print_info("Erstelle Desktop-Launcher...")
+    
+    current_dir = Path.cwd().resolve()
+    
+    if os_type == "Linux":
+        # Linux .desktop Datei
+        desktop_dir = Path.home() / '.local' / 'share' / 'applications'
+        desktop_dir.mkdir(parents=True, exist_ok=True)
+        
+        desktop_file = desktop_dir / 'mytinydesk.desktop'
+        
+        # Versuche Projektname aus Ordner zu ermitteln
+        project_name = current_dir.name.replace('_', ' ').title()
+        
+        content = f"""[Desktop Entry]
+Version=1.0
+Type=Application
+Name={project_name}
+Comment=Leichtgewichtiger PDF-Viewer
+Exec={current_dir / '.venv' / 'bin' / 'python'} {current_dir / 'main.py'}
+Icon=application-pdf
+Terminal=false
+Categories=Office;Viewer;
+Keywords=pdf;viewer;
+"""
+        
+        try:
+            with open(desktop_file, 'w') as f:
+                f.write(content)
+            os.chmod(desktop_file, 0o755)
+            
+            # Desktop-Datenbank aktualisieren
+            try:
+                subprocess.run(['update-desktop-database', str(desktop_dir)], 
+                             check=False, capture_output=True)
+            except:
+                pass
+            
+            print_success(f"Desktop-Launcher erstellt: {desktop_file}")
+            print_info(f"Anwendung erscheint im Anwendungsmenü als '{project_name}'")
+            return True
+            
+        except Exception as e:
+            print_warning(f"Desktop-Launcher konnte nicht erstellt werden: {e}")
+            return False
+            
+    elif os_type == "Windows":
+        # Windows Shortcut
+        try:
+            import winshell
+            from win32com.client import Dispatch
+            
+            desktop = winshell.desktop()
+            shortcut_path = Path(desktop) / 'myTinyDesk.lnk'
+            
+            shell = Dispatch('WScript.Shell')
+            shortcut = shell.CreateShortCut(str(shortcut_path))
+            shortcut.Targetpath = str(current_dir / '.venv' / 'Scripts' / 'python.exe')
+            shortcut.Arguments = str(current_dir / 'main.py')
+            shortcut.WorkingDirectory = str(current_dir)
+            shortcut.IconLocation = 'shell32.dll,1'  # PDF Icon
+            shortcut.save()
+            
+            print_success(f"Desktop-Verknüpfung erstellt: {shortcut_path}")
+            return True
+            
+        except ImportError:
+            print_warning("pywin32 nicht installiert. Desktop-Verknüpfung übersprungen.")
+            print_info("Installiere mit: pip install pywin32")
+            return False
+        except Exception as e:
+            print_warning(f"Desktop-Verknüpfung konnte nicht erstellt werden: {e}")
+            return False
+            
+    elif os_type == "Darwin":
+        # macOS .app Bundle (vereinfacht)
+        print_info("Auf macOS: Verwende start_pdfreader.sh oder füge zu Dock hinzu")
+        print_info(f"Pfad: {current_dir / 'start_pdfreader.sh'}")
+        return True
+    
+    return False
+
+
 def test_installation():
     """Teste die Installation"""
     print_info("Teste Installation...")
@@ -298,13 +400,18 @@ def main():
     # 6. Starter-Script erstellen
     create_launcher(os_type)
     
-    # 7. Installation testen
+    # 7. Desktop-Launcher erstellen (optional)
+    response = input("\nMöchtest du einen Desktop-Launcher erstellen? (j/n): ")
+    if response.lower() == 'j':
+        create_desktop_entry(os_type)
+    
+    # 8. Installation testen
     test_installation()
     
     # Fertig!
     print_header("Installation abgeschlossen!")
     
-    print(f"\n{Colors.OKGREEN}{Colors.BOLD}myTinyDesk PDF Reader ist bereit!{Colors.ENDC}\n")
+    print(f"\n{Colors.OKGREEN}{Colors.BOLD}Setup erfolgreich abgeschlossen!{Colors.ENDC}\n")
     print("Starte die Anwendung mit:")
     if os_type == "Windows":
         print(f"  {Colors.OKCYAN}start_pdfreader.bat{Colors.ENDC}")
